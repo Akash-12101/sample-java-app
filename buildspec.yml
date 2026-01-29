@@ -5,12 +5,14 @@ phases:
     commands:
       - IMAGE_NAME=757367946571.dkr.ecr.ap-south-1.amazonaws.com/java-container-repo
       - IMAGE_TAG=latest
-      - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 757367946571.dkr.ecr.ap-south-1.amazonaws.com
 
   build:
     commands:
-      - mvn clean install
       - echo Build started on `date`
+      - echo Running Maven build...
+      - mvn clean install
       - echo Building the Docker image...
       - docker build -t $IMAGE_NAME:$IMAGE_TAG .
 
@@ -20,7 +22,7 @@ phases:
       - docker push $IMAGE_NAME:$IMAGE_TAG
       - echo Creating imagedefinitions.json for ECS...
       - DOCKER_CONTAINER_NAME=app-java
-      - printf '[{"name":"%s","imageUri":"%s"}]' "$DOCKER_CONTAINER_NAME" "$REPOSITORY_URI:$IMAGE_TAG" > imagedefinitions.json
+      - printf '[{"name":"%s","imageUri":"%s"}]' "$DOCKER_CONTAINER_NAME" "$IMAGE_NAME:$IMAGE_TAG" > imagedefinitions.json
       - echo imagedefinitions.json content:
       - cat imagedefinitions.json
 
