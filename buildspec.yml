@@ -20,7 +20,6 @@ commands:
 - echo Pushing Docker image
 - docker push $IMAGE_NAME:$IMAGE_TAG
 - printf '[{"name":"app-java","imageUri":"%s"}]' $IMAGE_NAME:$IMAGE_TAG > imagedefinitions.json
-- cat imagedefinitions.json
 
 artifacts:
 files:
