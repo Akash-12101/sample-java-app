@@ -1,6 +1,10 @@
 version: 0.2
 
 phases:
+  install:
+    runtime-versions:
+      java: corretto17
+
   pre_build:
     commands:
       - echo Logging in to Amazon ECR
@@ -12,7 +16,7 @@ phases:
     commands:
       - echo Build started
       - chmod +x mvnw
-      - ./mvnw clean install
+      - ./mvnw clean package
       - docker build -t $IMAGE_NAME:$IMAGE_TAG .
 
   post_build:
@@ -20,7 +24,6 @@ phases:
       - echo Pushing Docker image
       - docker push $IMAGE_NAME:$IMAGE_TAG
       - printf '[{"name":"app-java","imageUri":"%s"}]' $IMAGE_NAME:$IMAGE_TAG > imagedefinitions.json
-      - cat imagedefinitions.json
 
 artifacts:
   files:
